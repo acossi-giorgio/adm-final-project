@@ -5,7 +5,7 @@ from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(os.path.join(os.getcwd(), '.env'), override=True)
 
 logging.basicConfig(
     level=logging.INFO,
