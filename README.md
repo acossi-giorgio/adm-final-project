@@ -69,7 +69,7 @@ The queries are defined in `workload.ipynb`.
 
 2. **Configure `.env`**:
 
-   If running the notebook locally against the Docker cluster exposed on localhost (default port 27017):
+   If running the notebook locally against the Docker cluster exposed on localhost:
    ```env
    MONGO_URI=mongodb://localhost:27017/
    DB_NAME=adm_project_db
