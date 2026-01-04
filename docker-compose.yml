@@ -27,12 +27,12 @@ services:
     container_name: adm_mongo_router
     command: mongos --configdb configRS/mongo-config:27019 --port 27017 --bind_ip_all
     ports:
-      - "27017:27017" # Main entry point, same port as before
+      - "27017:27017"
     depends_on:
       - mongo-config
       - mongo-shard
 
-  # Initialization Script (Runs once to setup cluster)
+  # Initialization Script
   mongo-init:
     image: mongo:latest
     container_name: adm_mongo_init
@@ -42,6 +42,7 @@ services:
       - mongo-router
     entrypoint: [ "bash", "/init-mongo.sh" ]
 
+  # ETL Script
   etl:
     build:
       context: .
