@@ -1,6 +1,7 @@
 # ADM Final Project
 
 **Authors:** Acossi Giorgio, Ventura Eleonora
+
 **Course:** Advanced Data Management - UniGE - 2025/2026
 
 ## Overview
