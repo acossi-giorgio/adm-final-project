@@ -20,6 +20,7 @@ To set up the environment locally, we use `docker-compose`. This will start the 
 1. **Clone the repository**.
 2. **Ensure Docker is running**.
 3. **Build and start the containers**:
+   
    ```bash
    docker-compose up --build
    ```
