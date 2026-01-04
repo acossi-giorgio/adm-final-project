@@ -67,7 +67,8 @@ The queries are defined in `workload.ipynb`.
    pip install -r requirements.txt
    ```
 
-2. **Configure `.env` for Local Execution**:
+2. **Configure `.env`**:
+
    If running the notebook locally against the Docker cluster exposed on localhost (default port 27017):
    ```env
    MONGO_URI=mongodb://localhost:27017/
