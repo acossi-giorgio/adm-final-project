@@ -14,7 +14,7 @@ The dataset used in this project is available on Kaggle:
 > Please download the dataset and place the CSV files in the `dataset/` directory before running the pipeline.
 
 ## Local Testing with Docker
-To set up the environment locally, we use `docker-compose`. This will start the Config Servers, Shards, and Router services, initialize the cluster, and automatically run the ETL process.
+To set up the environment locally, we use `docker-compose`.
 
 ### Steps:
 1. **Clone the repository**.

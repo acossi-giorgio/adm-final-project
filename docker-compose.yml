@@ -1,66 +1,28 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  # Config Server
-  mongo-config:
+  mongo:
     image: mongo:latest
-    container_name: adm_mongo_config
-    command: mongod --configsvr --replSet configRS --port 27019 --bind_ip_all
-    ports:
-      - "27019:27019"
-    volumes:
-      - mongo_config_data:/data/configdb
-
-  # Shard Server
-  mongo-shard:
-    image: mongo:latest
-    container_name: adm_mongo_shard
-    command: mongod --shardsvr --replSet shard1RS --port 27018 --bind_ip_all
-    ports:
-      - "27018:27018"
-    volumes:
-      - mongo_shard_data:/data/db
-
-  # Mongos Router
-  mongo-router:
-    image: mongo:latest
-    container_name: adm_mongo_router
-    command: mongos --configdb configRS/mongo-config:27019 --port 27017 --bind_ip_all
+    container_name: adm_mongo
     ports:
       - "27017:27017"
-    depends_on:
-      - mongo-config
-      - mongo-shard
-
-  # Initialization Script
-  mongo-init:
-    image: mongo:latest
-    container_name: adm_mongo_init
     volumes:
-      - ./init-mongo.sh:/init-mongo.sh
-    depends_on:
-      - mongo-router
-    entrypoint: [ "bash", "/init-mongo.sh" ]
+      - mongo_data:/data/db
 
-  # ETL Script
   etl:
     build:
       context: .
       dockerfile: dockerfile
     container_name: adm_project_etl
     depends_on:
-      mongo-router:
-        condition: service_started
-      mongo-init:
-        condition: service_completed_successfully
+      - mongo
     environment:
-      - MONGO_URI=mongodb://mongo-router:27017/
-      - DB_NAME=adm_project_db
+      - MONGO_URI=mongodb://mongo:27017/
+      - DB_NAME=user2_db
     volumes:
       - ./etl.py:/app/etl.py
       - ./dataset:/app/dataset
       - ./.env:/app/.env
 
 volumes:
-  mongo_config_data:
-  mongo_shard_data:
+  mongo_data:

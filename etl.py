@@ -63,8 +63,8 @@ def setup_indexes(db):
         logger.warning("Warning creating indexes for clubs: %s", e)
 
     try:
-        db.games1.create_index([("home_club_goals", 1), ("competition_name", 1)], unique=False)
-        db.games1.create_index([("home_club_goals", 1), ("competition_name", 1), ("game_id", 1)], unique=True)
+        db.games1.create_index([("home_club_goals", 1), ("competition_id", 1)], unique=False)
+        db.games1.create_index([("home_club_goals", 1), ("competition_id", 1), ("game_id", 1)], unique=True)
         logger.info("Indexes created for 'games1'")
     except Exception as e:
         logger.warning("Warning creating indexes for games1: %s", e)
@@ -92,8 +92,7 @@ def process_players(db):
 
         comps = load_csv("competitions.csv")
         app_subset = appearances[['player_id', 'competition_id']].drop_duplicates()
-        app_subset = app_subset.merge(comps[['competition_id', 'name']], on='competition_id', how='left')
-        app_grouped = app_subset.groupby('player_id')['name'].apply(list).reset_index(name='plays_in_competition')
+        app_grouped = app_subset.groupby('player_id')['competition_id'].apply(list).reset_index(name='plays_in_competition')
         
         players_final = players[['player_id', 'last_name', 'first_name', 'date_of_birth', 'position', 'country_of_citizenship']].copy()
         players_final.rename(columns={
@@ -203,15 +202,13 @@ def process_game1(db):
         comps = load_csv("competitions.csv")
 
         club_map = clubs.set_index('club_id')['name'].to_dict()
-        comp_map = comps.set_index('competition_id')['name'].to_dict()
 
         games['home_club_name'] = games['home_club_id'].map(club_map)
         games['away_club_name'] = games['away_club_id'].map(club_map)
-        games['competition_name'] = games['competition_id'].map(comp_map)
         
         games.rename(columns={'stadium': 'stadium_name'}, inplace=True)
 
-        cols = ['game_id', 'home_club_goals', 'competition_name', 'date', 'season', 'home_club_name', 'away_club_name', 'stadium_name']
+        cols = ['game_id', 'home_club_goals', 'competition_id', 'date', 'season', 'home_club_name', 'away_club_name', 'stadium_name']
         games_final = games[cols].copy()
 
         records = games_final.to_dict('records')
@@ -263,8 +260,8 @@ def setup_sharding(client):
             logger.warning("Could not shard 'clubs': %s", e)
             
         try:
-            client.admin.command('shardCollection', f"{db_name}.games1", key={"home_club_goals": 1, "competition_name": 1})
-            logger.info("Sharded 'games1' with key: {home_club_goals: 1, competition_name: 1}")
+            client.admin.command('shardCollection', f"{db_name}.games1", key={"home_club_goals": 1, "competition_id": 1})
+            logger.info("Sharded 'games1' with key: {home_club_goals: 1, competition_id: 1}")
         except Exception as e:
             logger.warning("Could not shard 'games1': %s", e)
             
