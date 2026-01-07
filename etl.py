@@ -51,7 +51,7 @@ def setup_indexes(db):
     try:
         db.players.create_index([("surname", 1), ("name", 1)], unique=False)
         db.players.create_index([("surname", 1), ("name", 1), ("birthdate", 1)], unique=True)
-        db.players.create_index([("player_valuation.market_value", 1), ("position", 1)], unique=False)
+        db.players.create_index([("plays_in_competition", 1), ("position", 1)], unique=False)
         logger.info("Indexes created for 'players'")
     except Exception as e:
         logger.warning("Warning creating indexes for players: %s", e)
@@ -93,7 +93,6 @@ def process_players(db):
             include_groups=False
         ).reset_index(name='player_valuation')
 
-        comps = load_csv("competitions.csv")
         app_subset = appearances[['player_id', 'competition_id']].drop_duplicates()
         app_grouped = app_subset.groupby('player_id')['competition_id'].apply(list).reset_index(name='plays_in_competition')
         
