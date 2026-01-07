@@ -51,6 +51,7 @@ def setup_indexes(db):
     try:
         db.players.create_index([("surname", 1), ("name", 1)], unique=False)
         db.players.create_index([("surname", 1), ("name", 1), ("birthdate", 1)], unique=True)
+        db.players.create_index([("player_valuation.market_value", 1), ("position", 1)], unique=False)
         logger.info("Indexes created for 'players'")
     except Exception as e:
         logger.warning("Warning creating indexes for players: %s", e)
@@ -65,6 +66,7 @@ def setup_indexes(db):
     try:
         db.games1.create_index([("home_club_goals", 1), ("competition_id", 1)], unique=False)
         db.games1.create_index([("home_club_goals", 1), ("competition_id", 1), ("game_id", 1)], unique=True)
+        db.games1.create_index([("stadium_name", 1), ("season", 1)], unique=False)
         logger.info("Indexes created for 'games1'")
     except Exception as e:
         logger.warning("Warning creating indexes for games1: %s", e)
@@ -72,6 +74,7 @@ def setup_indexes(db):
     try:
         db.games2.create_index([("referee", 1)], unique=False)
         db.games2.create_index([("referee", 1), ("game_id", 1)], unique=True)
+        db.games2.create_index([("referee", 1), ("game_events.type", 1)], unique=False)
         logger.info("Indexes created for 'games2'")
     except Exception as e:
         logger.warning("Warning creating indexes for games2: %s", e)
